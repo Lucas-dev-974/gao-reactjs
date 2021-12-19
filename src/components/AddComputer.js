@@ -1,43 +1,65 @@
-import React from "react";
-import axios from "axios";
+import { Button, CardActions, CardContent, CardHeader, Dialog, Icon, IconButton, TextField, Card } from '@mui/material'
+import { green } from '@mui/material/colors'
+import React from 'react'
+import ApiService from '../Services/ApiService'
 
-import { green, red } from '@mui/material/colors';
-import {  Dialog, DialogTitle, DialogContent, DialogContentText, Button, IconButton, Icon } from '@mui/material';
 
+export default class AddComputer extends React.Component{
+    constructor(props){
+        super(props)
 
-export default class Computer extends React.Component{
-    constructor(props) {
-        super(props);
-  
         this.state = {
-            dialog: false,
+            name: '',
+            dialog: false
         }
 
-        this.handleClickOpen = this.handleClickOpen.bind(this)
+        this.handleOpen = this.handleOpen.bind(this)
+        this.handleTextField = this.handleTextField.bind(this)
+        this.addComputer = this.addComputer.bind(this)
     }
 
-    handleClickOpen(){
+    addComputer(){
+        ApiService.post('/api/computers/', {name: this.state.name})
+        .then(({data}) => {
+            data.computer.attributions = (data.computer.attributions) ? data.computer.attributions : []
+            this.props.pushComputer(data.computer)
+            this.setState({ dialog: false })
+        }).catch(err => {
+            console.log(err);
+        })
+    }
+
+    handleOpen(){
         this.setState({
             dialog: !this.state.dialog
+        })
+    }
+
+    handleTextField(event){
+        this.setState({
+            name: event.target.value
         })
     }
 
     render(){
         return(
             <div>
-                <IconButton onClick={this.handleClickOpen} edge="end" aria-label="delete"><Icon  sx={{ color: green[500] }}>add_circle</Icon></IconButton>
-                <Dialog open={this.state.dialog} onClose={this.handleClickOpen}>
-                    <DialogTitle>
-                        {"Use Google's location service?"}
-                    </DialogTitle>
-                    <DialogContent>
-                        <DialogContentText>
-                            Let Google help apps determine location. This means sending anonymous
-                            location data to Google, even when no apps are running.
-                        </DialogContentText>
-                    </DialogContent>
+                <IconButton onClick={this.handleOpen} edge="end" aria-label="delete"><Icon  sx={{ color: green[500] }}>add</Icon></IconButton>
+                <Dialog open={this.state.dialog} onClose={this.handleOpen}>
+                    <Card style={{minWidth: '500px'}}>
+                        <CardHeader title="Ajout d'un ordinateur" style={{backgroundColor: '#09151E', color: '#FFFF'}}/>
+                        <CardContent >
+                            <TextField value={this.state.name} onChange={this.handleTextField} style={{width: '100%'}} id="standard-basic" label="Nom de l'ordinateur" variant="standard" /> 
+                        </CardContent>
+                        <CardActions style={{display: 'flex', justifyContent: 'center'}}>
+                            <Button  variant="outlined" color="success"  onClick={this.addComputer} style={{width: '50%'}}>
+                                Ajouter
+                            </Button>
+                        </CardActions>
+                    </Card>
                 </Dialog>
             </div>
         )
+
     }
 }
