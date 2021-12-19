@@ -1,0 +1,23 @@
+body{
+    margin: 0 !important;
+}
+
+.home-container{
+    margin-top: 40px;
+    margin-inline: 50px;
+}
+
+@media(max-width: 450px){ /* Mobile */
+    .home-container{
+        margin-inline: 10px;
+    }
+}
+
+
+.bg-dark{
+    background-color: #09151E;
+    color: aliceblue;
+}
+
+.w-100{ width: 100% !important; }
+.w-50{  width: 50% !important; }
