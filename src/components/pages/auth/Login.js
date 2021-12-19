@@ -40,11 +40,12 @@ export default class Login extends React.Component{
 
 
     LoginFunction(){
-      APIService.post('/login', {email: this.state.email, password: this.state.password})
+      APIService.post('/api/auth', {email: this.state.email, password: this.state.password})
       .then(({data}) => {
-        window.localStorage.setItem('AccessToken', data.AccessToken)
+        window.localStorage.setItem('AccessToken', data.access_token)
+        window.location.href = '/'
       }).catch(error => {
-        console.log(error.response.data);
+        console.log(error);
       })
     }
 
